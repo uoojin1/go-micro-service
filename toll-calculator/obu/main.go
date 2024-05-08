@@ -7,11 +7,15 @@ sits in trucks, and sends out gps per interval
 package main
 
 import (
-	"fmt"
+	"log"
 	"math"
 	"math/rand"
 	"time"
+
+	"github.com/gorilla/websocket"
 )
+
+const wsEndpoint = "ws://localhost:30000/ws"
 
 var sendInterval = time.Second
 
@@ -39,12 +43,14 @@ func generateOBUIDs(n int) []int {
 	return ids
 }
 
-func init() {
-	rand.Seed(time.Now().UnixNano())
-}
-
 func main() {
 	obuIDs := generateOBUIDs(20)
+	// connect to websocket endpoint
+	conn, _, err := websocket.DefaultDialer.Dial(wsEndpoint, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	for {
 		for i := 0; i < len(obuIDs); i++ {
 			lat, long := genLatLong()
@@ -53,7 +59,10 @@ func main() {
 				Lat:   lat,
 				Long:  long,
 			}
-			fmt.Printf("%+v\n", data)
+			// write JSON to the connection
+			if err := conn.WriteJSON(data); err != nil {
+				log.Fatal(err)
+			}
 		}
 		time.Sleep(sendInterval)
 	}
