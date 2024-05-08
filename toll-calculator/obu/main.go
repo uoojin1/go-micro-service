@@ -13,17 +13,12 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/uoojin95/tolling/types"
 )
 
 const wsEndpoint = "ws://localhost:30000/ws"
 
 var sendInterval = time.Second
-
-type OBUData struct {
-	OBUID int     `json:"obuID"`
-	Lat   float64 `json:"lat"`
-	Long  float64 `json:"long"`
-}
 
 func genCoord() float64 {
 	n := float64(rand.Intn(100) + 1) // 1~101
@@ -54,7 +49,7 @@ func main() {
 	for {
 		for i := 0; i < len(obuIDs); i++ {
 			lat, long := genLatLong()
-			data := OBUData{
+			data := types.OBUData{
 				OBUID: obuIDs[i],
 				Lat:   lat,
 				Long:  long,
