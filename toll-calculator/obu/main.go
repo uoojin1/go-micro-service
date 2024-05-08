@@ -21,15 +21,14 @@ type OBUData struct {
 	Long  float64 `json:"long"`
 }
 
-// // returns Lat, Long
-// func genLocation() (float64, float64) {
-// 	return genCoord(), genCoord()
-// }
-
-func genLatLong() (float64, float64) {
+func genCoord() float64 {
 	n := float64(rand.Intn(100) + 1) // 1~101
 	f := rand.Float64()              // 0.0~1.0
 	return n + f
+}
+
+func genLatLong() (float64, float64) {
+	return genCoord(), genCoord()
 }
 
 func generateOBUIDs(n int) []int {
